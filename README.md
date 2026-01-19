@@ -1,6 +1,6 @@
 # IoT Query Probe
 
-A simple, open-source analytics application for exploring and visualizing IoT data from [Navixy](https://www.navixy.com/) PostgreSQL databases.
+A simple, open-source analytics application for exploring and visualizing IoT data from [Navixy IoT Query](https://www.navixy.com/en/iot-query/) database.
 
 ![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red.svg)
@@ -41,7 +41,7 @@ IoT Query Probe is a lightweight, browser-based tool designed for data analysts 
 
 ### Prerequisites
 - Python 3.9 or higher
-- Access to a PostgreSQL database
+- Access to a Navixy IoT Query database
 
 ### Installation
 
@@ -140,7 +140,6 @@ QUERY_TIMEOUT_MS = 30000  # Query timeout in milliseconds
 iot-query-probe/
 ├── app.py              # Main application (single file)
 ├── requirements.txt    # Python dependencies
-├── .gitignore          # Git ignore rules
 └── README.md           # This file
 ```
 
@@ -190,9 +189,8 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## Support
 
-For issues and feature requests, please use the [GitHub Issues](https://github.com/AndyMelnik/iot-query-probe/issues) page.
+THis is AS IS app. For questions, please use the [GitHub Issues](https://github.com/AndyMelnik/iot-query-probe/issues) page.
 
 ---
 
-Made with ❤️ for the IoT community
 
