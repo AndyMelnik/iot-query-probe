@@ -504,7 +504,6 @@ def render_chart():
     st.markdown("---")
     st.markdown("## Chart")
     
-    numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
     all_cols = df.columns.tolist()
     
     if not all_cols:
@@ -516,8 +515,7 @@ def render_chart():
     with col1:
         x_axis = st.selectbox("X-axis", options=all_cols, key="chart_x")
     with col2:
-        y_options = numeric_cols if numeric_cols else all_cols
-        y_axis = st.selectbox("Y-axis", options=y_options, key="chart_y")
+        y_axis = st.selectbox("Y-axis", options=all_cols, key="chart_y")
     with col3:
         color_by = st.selectbox("Color by", options=["None"] + all_cols, key="chart_color")
     
