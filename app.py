@@ -47,11 +47,19 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Minimal clean CSS
+# Minimal light theme CSS (inline config)
 st.markdown("""
 <style>
+    :root {
+        --primary-color: #4a6cf7;
+        --background-color: #ffffff;
+        --secondary-background-color: #f8f9fa;
+        --text-color: #1a1a1a;
+    }
+    .stApp { background-color: #ffffff; }
+    section[data-testid="stSidebar"] { background-color: #f8f9fa; }
     .main .block-container { padding: 1rem 2rem; max-width: 100%; }
-    h1, h2, h3 { font-weight: 500; margin-bottom: 0.5rem; }
+    h1, h2, h3 { font-weight: 500; margin-bottom: 0.5rem; color: #1a1a1a; }
     .stTextArea textarea { font-family: 'Consolas', 'Monaco', monospace; font-size: 13px; }
     .success-msg { background: #d4edda; border-left: 3px solid #28a745; padding: 10px 15px; margin: 10px 0; color: #155724; }
     .error-msg { background: #f8d7da; border-left: 3px solid #dc3545; padding: 10px 15px; margin: 10px 0; color: #721c24; }
