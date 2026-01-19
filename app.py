@@ -47,23 +47,25 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Minimal light theme CSS (inline config)
+# Minimal CSS with contrast support for light/dark themes
 st.markdown("""
 <style>
-    :root {
-        --primary-color: #4a6cf7;
-        --background-color: #ffffff;
-        --secondary-background-color: #f8f9fa;
-        --text-color: #1a1a1a;
-    }
-    .stApp { background-color: #ffffff; }
-    section[data-testid="stSidebar"] { background-color: #f8f9fa; }
     .main .block-container { padding: 1rem 2rem; max-width: 100%; }
-    h1, h2, h3 { font-weight: 500; margin-bottom: 0.5rem; color: #1a1a1a; }
+    h1, h2, h3 { font-weight: 500; margin-bottom: 0.5rem; }
     .stTextArea textarea { font-family: 'Consolas', 'Monaco', monospace; font-size: 13px; }
-    .success-msg { background: #d4edda; border-left: 3px solid #28a745; padding: 10px 15px; margin: 10px 0; color: #155724; }
-    .error-msg { background: #f8d7da; border-left: 3px solid #dc3545; padding: 10px 15px; margin: 10px 0; color: #721c24; }
-    hr { margin: 1.5rem 0; border-color: #e0e0e0; }
+    hr { margin: 1.5rem 0; opacity: 0.3; }
+    
+    /* Light theme */
+    @media (prefers-color-scheme: light) {
+        .success-msg { background: #d4edda; border-left: 3px solid #28a745; padding: 10px 15px; margin: 10px 0; color: #155724; }
+        .error-msg { background: #f8d7da; border-left: 3px solid #dc3545; padding: 10px 15px; margin: 10px 0; color: #721c24; }
+    }
+    
+    /* Dark theme */
+    @media (prefers-color-scheme: dark) {
+        .success-msg { background: #1e3a29; border-left: 3px solid #28a745; padding: 10px 15px; margin: 10px 0; color: #a3d9b1; }
+        .error-msg { background: #3d1f1f; border-left: 3px solid #dc3545; padding: 10px 15px; margin: 10px 0; color: #f5a5a5; }
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -348,7 +350,7 @@ def render_sidebar():
                     st.session_state["db_url"] = db_url
                     st.session_state["tables"] = tables
                     st.session_state["connected"] = True
-                    st.success(f"Connected. {len(tables)} tables found.")
+                    st.success("Connected")
                 except Exception as e:
                     st.error(f"Connection failed: {sanitize_error(e)}")
                     st.session_state["connected"] = False
