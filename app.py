@@ -257,7 +257,7 @@ def generate_html_report(df: pd.DataFrame, chart_fig=None, map_fig=None,
             yaxis=dict(color='black', gridcolor='#ddd', linecolor='#333'),
             legend=dict(font=dict(color='black'))
         )
-        chart_html = f'<div class="section"><h2>Chart</h2>{chart_fig_print.to_html(full_html=False, include_plotlyjs="cdn")}</div>'
+        chart_html = f'<div class="section section-chart"><h2>Chart</h2>{chart_fig_print.to_html(full_html=False, include_plotlyjs="cdn")}</div>'
     
     # Map HTML - use original map with light style
     map_html = ""
@@ -266,7 +266,7 @@ def generate_html_report(df: pd.DataFrame, chart_fig=None, map_fig=None,
             mapbox_style="carto-positron",
             paper_bgcolor='white'
         )
-        map_html = f'<div class="section"><h2>Map</h2>{map_fig.to_html(full_html=False, include_plotlyjs="cdn")}</div>'
+        map_html = f'<div class="section section-map"><h2>Map</h2>{map_fig.to_html(full_html=False, include_plotlyjs="cdn")}</div>'
     
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')
     
@@ -289,25 +289,33 @@ def generate_html_report(df: pd.DataFrame, chart_fig=None, map_fig=None,
             color: #000; 
         }}
         h1 {{ font-size: 16px; margin: 0 0 5px 0; }}
-        h2 {{ font-size: 13px; margin: 15px 0 8px 0; padding-bottom: 5px; border-bottom: 1px solid #ddd; }}
-        .meta {{ color: #333; margin-bottom: 10px; }}
-        .description {{ margin-bottom: 15px; padding: 10px; background: #f9f9f9; border-left: 3px solid #ddd; }}
+        h2 {{ font-size: 13px; margin: 10px 0 8px 0; padding-bottom: 5px; border-bottom: 1px solid #ddd; }}
+        .header {{ page-break-after: avoid; }}
+        .meta {{ color: #333; margin-bottom: 5px; }}
+        .description {{ margin-bottom: 10px; padding: 8px; background: #f9f9f9; border-left: 3px solid #ddd; }}
         table {{ width: 100%; border-collapse: collapse; font-size: 10px; }}
         th, td {{ padding: 4px 6px; border: 1px solid #ddd; text-align: left; }}
         th {{ background: #f5f5f5; font-weight: 600; }}
         tr:nth-child(even) {{ background: #fafafa; }}
-        .section {{ margin: 20px 0; page-break-inside: avoid; }}
+        thead {{ display: table-header-group; }}
+        tr {{ page-break-inside: avoid; }}
+        .section {{ margin: 15px 0; }}
+        .section-chart, .section-map {{ page-break-inside: avoid; page-break-before: auto; }}
         @media print {{
             body {{ font-size: 9px; padding: 0; }}
             table {{ font-size: 8px; }}
+            .header {{ page-break-after: avoid; }}
+            h2 {{ page-break-after: avoid; }}
         }}
         @page {{ margin: 1cm; size: A4 landscape; }}
     </style>
 </head>
 <body>
-    <h1>{escape(report_name)}</h1>
-    <div class="meta">Generated: {timestamp} | Rows: {len(df):,}</div>
-    {desc_html}
+    <div class="header">
+        <h1>{escape(report_name)}</h1>
+        <div class="meta">Generated: {timestamp} | Rows: {len(df):,}</div>
+        {desc_html}
+    </div>
     <div class="section"><h2>Data</h2>{table_html}</div>
     {chart_html}
     {map_html}
