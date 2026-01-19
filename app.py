@@ -47,20 +47,15 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Minimal dark theme CSS
+# Minimal clean CSS
 st.markdown("""
 <style>
-    .stApp { background-color: #0e1117; }
     .main .block-container { padding: 1rem 2rem; max-width: 100%; }
     h1, h2, h3 { font-weight: 500; margin-bottom: 0.5rem; }
     .stTextArea textarea { font-family: 'Consolas', 'Monaco', monospace; font-size: 13px; }
-    .stDataFrame { border-radius: 4px; }
-    .success-msg { background: #1a472a; border-left: 3px solid #22c55e; padding: 10px 15px; margin: 10px 0; }
-    .error-msg { background: #4a1a1a; border-left: 3px solid #ef4444; padding: 10px 15px; margin: 10px 0; }
-    .info-msg { background: #1a2744; border-left: 3px solid #3b82f6; padding: 10px 15px; margin: 10px 0; }
-    section[data-testid="stSidebar"] { background-color: #161b22; }
-    .stButton button { border-radius: 4px; }
-    hr { margin: 1.5rem 0; border-color: #30363d; }
+    .success-msg { background: #d4edda; border-left: 3px solid #28a745; padding: 10px 15px; margin: 10px 0; color: #155724; }
+    .error-msg { background: #f8d7da; border-left: 3px solid #dc3545; padding: 10px 15px; margin: 10px 0; color: #721c24; }
+    hr { margin: 1.5rem 0; border-color: #e0e0e0; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -256,10 +251,6 @@ def generate_html_report(df: pd.DataFrame, chart_fig=None, map_fig=None,
             paper_bgcolor='white'
         )
         map_html = f'<div class="section"><h2>Map</h2>{map_fig.to_html(full_html=False, include_plotlyjs="cdn")}</div>'
-        map_fig.update_layout(
-            mapbox_style="carto-darkmatter",
-            paper_bgcolor='rgba(0,0,0,0)'
-        )
     
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')
     
@@ -515,11 +506,9 @@ def render_chart():
                 y=y_axis,
                 color=color,
                 title=f"{y_axis} over {x_axis}",
-                template="plotly_dark"
+                template="plotly_white"
             )
             fig.update_layout(
-                plot_bgcolor='rgba(0,0,0,0)',
-                paper_bgcolor='rgba(0,0,0,0)',
                 margin=dict(l=40, r=40, t=40, b=40)
             )
             st.session_state["current_chart"] = fig
@@ -626,17 +615,17 @@ def render_map():
                 zoom=zoom,
                 center={"lat": center_lat, "lon": center_lon},
                 height=500,
-                mapbox_style="carto-darkmatter"
+                mapbox_style="carto-positron"
             )
             
             if color:
                 fig.update_layout(
                     margin={"r": 0, "t": 30, "l": 0, "b": 0},
                     legend=dict(
-                        title=dict(text=color_col, font=dict(size=12, color="white")),
-                        font=dict(size=11, color="white"),
-                        bgcolor="rgba(30, 30, 30, 0.85)",
-                        bordercolor="rgba(255, 255, 255, 0.3)",
+                        title=dict(text=color_col, font=dict(size=12, color="#333")),
+                        font=dict(size=11, color="#333"),
+                        bgcolor="rgba(255, 255, 255, 0.9)",
+                        bordercolor="#ccc",
                         borderwidth=1,
                         orientation="v",
                         yanchor="top",
