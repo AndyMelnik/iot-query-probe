@@ -14,7 +14,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from urllib.parse import quote_plus, urlparse, parse_qs
+from urllib.parse import quote, unquote, urlparse, parse_qs
 import io
 import html
 import re
@@ -128,8 +128,10 @@ def build_connection_string(host: str, port: str, database: str, user: str, pass
     if not port.isdigit():
         return ""
     
-    encoded_password = quote_plus(password)
-    return f"postgresql://{user}:{encoded_password}@{host}:{port}/{database}?sslmode=require"
+    # URL-encode user and password to handle special characters like <, >, ^, etc.
+    encoded_user = quote(user, safe='')
+    encoded_password = quote(password, safe='')
+    return f"postgresql://{encoded_user}:{encoded_password}@{host}:{port}/{database}?sslmode=require"
 
 
 def get_connection(db_url: str):
@@ -139,6 +141,10 @@ def get_connection(db_url: str):
     
     parsed = urlparse(db_url)
     params = parse_qs(parsed.query)
+    
+    # Decode URL-encoded username and password (handles special chars like <, >, ^, etc.)
+    username = unquote(parsed.username) if parsed.username else None
+    password = unquote(parsed.password) if parsed.password else None
     
     # SSL configuration
     ssl_context = None
@@ -151,8 +157,8 @@ def get_connection(db_url: str):
             ssl_context.verify_mode = ssl.CERT_NONE
     
     return pg8000.native.Connection(
-        user=parsed.username,
-        password=parsed.password,
+        user=username,
+        password=password,
         host=parsed.hostname,
         port=parsed.port or 5432,
         database=parsed.path.lstrip('/'),
