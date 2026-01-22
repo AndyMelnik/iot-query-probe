@@ -159,23 +159,6 @@ def execute_query(db_url: str, query: str) -> pd.DataFrame:
         conn.close()
 
 
-def get_tables(db_url: str) -> list:
-    """Get list of available tables."""
-    query = """
-        SELECT table_schema || '.' || table_name as full_name
-        FROM information_schema.tables
-        WHERE table_schema NOT IN ('pg_catalog', 'information_schema')
-        AND table_type = 'BASE TABLE'
-        ORDER BY table_schema, table_name
-        LIMIT 100
-    """
-    try:
-        df = execute_query(db_url, query)
-        return df['full_name'].tolist() if not df.empty else []
-    except Exception:
-        return []
-
-
 # =============================================================================
 # EXPORT FUNCTIONS
 # =============================================================================
@@ -328,36 +311,21 @@ def render_sidebar():
         if st.button("Connect", type="primary", disabled=not db_url):
             with st.spinner("Connecting..."):
                 try:
-                    tables = get_tables(db_url)
+                    # Test connection
+                    conn = get_connection(db_url)
+                    conn.close()
                     st.session_state["db_url"] = db_url
-                    st.session_state["tables"] = tables
                     st.session_state["connected"] = True
                     st.success("Connected")
                 except Exception as e:
                     st.error(f"Connection failed: {sanitize_error(e)}")
                     st.session_state["connected"] = False
         
-        if st.session_state.get("connected") and st.session_state.get("tables"):
-            st.markdown("---")
-            st.markdown("### Tables")
-            
-            tables = st.session_state.get("tables", [])
-            selected_table = st.selectbox(
-                "Select table",
-                options=[""] + tables,
-                format_func=lambda x: x if x else "-- Select --"
-            )
-            
-            if selected_table and st.button("Load table"):
-                st.session_state["sql_query"] = f"SELECT * FROM {selected_table} LIMIT 100;"
-                st.rerun()
-        
         if st.session_state.get("connected"):
             st.markdown("---")
             if st.button("Disconnect"):
                 st.session_state["connected"] = False
                 st.session_state["db_url"] = ""
-                st.session_state["tables"] = []
                 st.session_state["query_result"] = None
                 st.rerun()
 
@@ -448,7 +416,7 @@ def render_data_table():
     col2.metric("Columns", len(filtered_df.columns))
     col3.metric("Filtered", "Yes" if filters else "No")
     
-    st.dataframe(filtered_df, use_container_width=True, height=400)
+    st.dataframe(filtered_df, use_container_width=True, height=600)
     
     excel_data = generate_excel(filtered_df)
     st.download_button(
