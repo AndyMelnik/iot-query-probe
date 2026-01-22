@@ -13,7 +13,7 @@ IoT Query Probe is a lightweight, browser-based tool designed for data analysts 
 ## Features
 
 ### Data Exploration
-- **SQL Editor** - Write and execute SELECT queries with syntax highlighting
+- **SQL Editor** - Write and execute SQL queries
 - **Table Browser** - Browse available tables and load data with one click
 - **Client-side Filtering** - Filter query results without re-running queries
 
@@ -30,12 +30,11 @@ IoT Query Probe is a lightweight, browser-based tool designed for data analysts 
   - Charts and maps with preserved colors
   - Optimized for A4 landscape printing
 
-### Security
-- **SELECT-only Queries** - DML/DDL statements are blocked
-- **SQL Injection Prevention** - Blocked patterns include multi-statements, comments, system functions
+### Performance & Safety
 - **Query Timeouts** - 30-second limit prevents runaway queries
 - **Row Limits** - Maximum 10,000 rows returned to prevent memory exhaustion
 - **Sanitized Errors** - Connection strings and credentials are never exposed in error messages
+- **SSL/TLS Support** - Secure database connections
 
 ## Quick Start
 
@@ -155,17 +154,18 @@ iot-query-probe/
 
 ## Security Considerations
 
-This application is designed for **read-only data exploration**. Security features include:
+This application executes SQL queries directly against the database. Security is managed at the database level:
 
-- ✅ Only `SELECT` and `WITH` (CTE) queries allowed
-- ✅ Blocked: `DROP`, `DELETE`, `UPDATE`, `INSERT`, `ALTER`, `CREATE`, `GRANT`, `REVOKE`
-- ✅ Blocked: Multi-statement queries (`;` followed by another statement)
-- ✅ Blocked: SQL comments (`--`, `/* */`)
-- ✅ Blocked: PostgreSQL system functions (`pg_*`)
-- ✅ Statement and lock timeouts enforced
-- ✅ SSL/TLS connections supported
+- **Database Permissions** - Use database user permissions to control query access
+- **Query Timeouts** - 30-second statement timeout prevents long-running queries
+- **Lock Timeouts** - 5-second lock timeout prevents blocking
+- **SSL/TLS** - Encrypted database connections supported
+- **Credential Protection** - Passwords masked in UI, sanitized in error messages
 
-**Note**: For production deployments, consider adding authentication (e.g., Streamlit authentication, reverse proxy with auth).
+**Important**: For production deployments:
+- Create a read-only database user with limited table access
+- Consider adding authentication (e.g., Streamlit authentication, reverse proxy with auth)
+- Deploy behind a firewall or VPN for internal use
 
 ## Contributing
 
