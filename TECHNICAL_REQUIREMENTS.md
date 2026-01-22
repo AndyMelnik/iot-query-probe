@@ -90,13 +90,9 @@ This document defines the functional and non-functional requirements for the IoT
 #### 3.2.2 Query Validation
 | ID | Requirement |
 |----|-------------|
-| SQL-007 | Block DML statements (INSERT, UPDATE, DELETE) |
-| SQL-008 | Block DDL statements (CREATE, ALTER, DROP, TRUNCATE) |
-| SQL-009 | Block administrative statements (GRANT, REVOKE, EXECUTE) |
-| SQL-010 | Block multiple statements (semicolon followed by statement) |
-| SQL-011 | Block SQL comments (-- and /* */) |
-| SQL-012 | Block PostgreSQL system function access (pg_*) |
-| SQL-013 | Block file operations (INTO OUTFILE, LOAD_FILE) |
+| SQL-007 | Validate query is not empty |
+
+> **Note:** Query security restrictions have been minimized. Database-level permissions should be used to control access.
 
 ### 3.3 Table Browser
 
@@ -186,13 +182,14 @@ This document defines the functional and non-functional requirements for the IoT
 
 | ID | Requirement | Implementation |
 |----|-------------|----------------|
-| SEC-001 | SELECT-only query execution | Query validation regex |
-| SEC-002 | No credential logging | Sanitize error messages |
-| SEC-003 | Connection string masking in errors | Regex replacement |
-| SEC-004 | Password field masking in UI | type="password" |
-| SEC-005 | SSL/TLS database connections | ssl_context configuration |
-| SEC-006 | Query timeout enforcement | statement_timeout setting |
-| SEC-007 | Lock timeout enforcement | lock_timeout setting |
+| SEC-001 | No credential logging | Sanitize error messages |
+| SEC-002 | Connection string masking in errors | Regex replacement |
+| SEC-003 | Password field masking in UI | type="password" |
+| SEC-004 | SSL/TLS database connections | ssl_context configuration |
+| SEC-005 | Query timeout enforcement | statement_timeout setting |
+| SEC-006 | Lock timeout enforcement | lock_timeout setting |
+
+> **Note:** SQL query restrictions have been minimized. Use database-level user permissions to control query access.
 
 ### 4.2 Performance
 
@@ -236,21 +233,6 @@ This document defines the functional and non-functional requirements for the IoT
 MAX_ROWS = 10000           # Maximum rows returned from query
 MAX_EXPORT_ROWS = 50000    # Maximum rows for Excel export
 QUERY_TIMEOUT_MS = 30000   # Query timeout in milliseconds
-```
-
-### 5.2 Blocked SQL Patterns
-
-```python
-BLOCKED_SQL_PATTERNS = [
-    r'\b(DROP|DELETE|TRUNCATE|UPDATE|INSERT|ALTER|CREATE|GRANT|REVOKE)\b',
-    r'\b(EXECUTE|EXEC|CALL)\b',
-    r';\s*\w',              # Multiple statements
-    r'--',                  # SQL comments
-    r'/\*',                 # Block comments
-    r'\bpg_',               # PostgreSQL system functions
-    r'\bINTO\s+OUTFILE\b',  # File operations
-    r'\bLOAD_FILE\b',       # File operations
-]
 ```
 
 ---
@@ -371,4 +353,5 @@ iot-query-probe/
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | 1.0 | January 2026 | - | Initial release |
+
 

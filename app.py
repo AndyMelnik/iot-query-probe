@@ -1,13 +1,6 @@
 """
 IoT Query Probe - Minimalistic SQL Query Interface
 Single-file application for PostgreSQL data exploration
-
-Security features:
-- SELECT-only queries (blocks DML/DDL)
-- Query timeout limits
-- Row limits to prevent memory exhaustion
-- Sanitized error messages
-- No credentials logging
 """
 
 import streamlit as st
@@ -27,18 +20,6 @@ from datetime import datetime
 MAX_ROWS = 10000
 MAX_EXPORT_ROWS = 50000
 QUERY_TIMEOUT_MS = 30000
-
-# Blocked SQL patterns (case-insensitive)
-BLOCKED_SQL_PATTERNS = [
-    r'\b(DROP|DELETE|TRUNCATE|UPDATE|INSERT|ALTER|CREATE|GRANT|REVOKE)\b',
-    r'\b(EXECUTE|EXEC|CALL)\b',
-    r';\s*\w',  # Multiple statements
-    r'--',  # SQL comments (potential injection)
-    r'/\*',  # Block comments
-    r'\bpg_',  # PostgreSQL system functions
-    r'\bINTO\s+OUTFILE\b',
-    r'\bLOAD_FILE\b',
-]
 
 st.set_page_config(
     page_title="IoT Query Probe",
@@ -71,29 +52,16 @@ st.markdown("""
 
 
 # =============================================================================
-# SECURITY FUNCTIONS
+# QUERY VALIDATION
 # =============================================================================
 def validate_query(query: str) -> tuple[bool, str]:
     """
-    Validate SQL query for security.
-    Only allows SELECT queries, blocks dangerous patterns.
+    Basic query validation.
     
     Returns: (is_valid, error_message)
     """
     if not query or not query.strip():
         return False, "Query cannot be empty"
-    
-    # Normalize query
-    normalized = query.strip().upper()
-    
-    # Must start with SELECT or WITH (for CTEs)
-    if not (normalized.startswith('SELECT') or normalized.startswith('WITH')):
-        return False, "Only SELECT queries are allowed"
-    
-    # Check for blocked patterns
-    for pattern in BLOCKED_SQL_PATTERNS:
-        if re.search(pattern, query, re.IGNORECASE):
-            return False, "Query contains blocked SQL pattern"
     
     return True, ""
 
@@ -414,9 +382,6 @@ def render_sql_editor():
         key="sql_input",
         label_visibility="collapsed"
     )
-    
-    # Security notice
-    st.caption("Only SELECT queries are allowed. DML/DDL statements are blocked.")
     
     col1, col2 = st.columns([1, 5])
     with col1:
