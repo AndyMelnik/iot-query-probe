@@ -19,7 +19,7 @@ from datetime import datetime
 # =============================================================================
 MAX_ROWS = 10000
 MAX_EXPORT_ROWS = 50000
-QUERY_TIMEOUT_MS = 30000
+QUERY_TIMEOUT_MS = 120000  # 2 minutes
 
 st.set_page_config(
     page_title="IoT Query Probe",
